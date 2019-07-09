@@ -63,10 +63,10 @@ CREATE TABLE LOJA(
 CREATE TABLE ESTOQUE(
 	estoque_id serial primary key,
 	loja_id int not null,
-	produto_id int not null,
+	PRECO_ID int not null,
 	quantidade int not null,
 	foreign key (loja_id) references loja(loja_id),
-	foreign key (produto_id) references produto(produto_id)
+	foreign key (PRECO_ID) references PRECO(PRECO_ID)
 );
 
 CREATE TABLE PRECO(
