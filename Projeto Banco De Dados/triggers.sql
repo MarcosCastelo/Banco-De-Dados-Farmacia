@@ -53,6 +53,7 @@ SELECT CADASTRACLIENTE('12312312312', 'ADF', '123', '12312312312', '01-01-1880')
 SELECT * FROM CLIENTE;
 
 CREATE OR REPLACE FUNCTION marca_nula() RETURNS trigger AS $marca_nula$
+    BEGIN
 	IF NEW.nome = '' THEN
 	    RAISE EXCEPTION 'Nome nulo';
 	END IF;
@@ -65,6 +66,7 @@ $marca_nula$ LANGUAGE plpgsql;
 CREATE TRIGGER marca_nula BEFORE INSERT OR UPDATE ON MARCA FOR EACH ROW EXECUTE PROCEDURE marca_nula();
 
 CREATE OR REPLACE FUNCTION produto_nulo() RETURNS trigger AS $produto_nulo$
+    BEGIN
 	IF NEW.nome = '' THEN
 	    RAISE EXCEPTION 'Nome nulo';
 	END IF;
@@ -76,6 +78,7 @@ $produto_nulo$ LANGUAGE plpgsql;
 CREATE TRIGGER produto_nulo BEFORE INSERT OR UPDATE ON produto FOR EACH ROW EXECUTE PROCEDURE produto_nulo();
 
 CREATE OR REPLACE FUNCTION categoria_nula() RETURNS trigger AS $categoria_nula$
+    BEGIN
 	IF NEW.nome = '' THEN
 	    RAISE EXCEPTION 'Nome nulo';
 	END IF;
