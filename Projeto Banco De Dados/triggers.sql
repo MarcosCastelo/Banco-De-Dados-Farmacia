@@ -108,3 +108,15 @@ CREATE OR REPLACE FUNCTION medico_nulo() RETURNS trigger AS $medico_nulo$
 $medico_nulo$ LANGUAGE plpgsql;
 
 CREATE TRIGGER medico_nulo BEFORE INSERT OR UPDATE ON MEDICO FOR EACH ROW EXECUTE PROCEDURE medico_nulo();
+
+CREATE OR REPLACE FUNCTION local_nulo() RETURNS trigger AS $local_nulo$
+    BEGIN
+	IF NEW.bairro = '' THEN
+	    RAISE EXCEPTION 'Bairro nulo';
+	END IF;
+
+	RETURN NEW;
+    END;
+$local_nulo$ LANGUAGE plpgsql;
+
+CREATE TRIGGER local_nulo BEFORE INSERT OR UPDATE ON LOCAL FOR EACH ROW EXECUTE PROCEDURE local_nulo();
