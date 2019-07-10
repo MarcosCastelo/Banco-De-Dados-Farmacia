@@ -88,3 +88,23 @@ CREATE OR REPLACE FUNCTION categoria_nula() RETURNS trigger AS $categoria_nula$
 $categoria_nula$ LANGUAGE plpgsql;
 
 CREATE TRIGGER categoria_nula BEFORE INSERT OR UPDATE ON CATEGORIA FOR EACH ROW EXECUTE PROCEDURE categoria_nula();
+
+CREATE OR REPLACE FUNCTION medico_nulo() RETURNS trigger AS $medico_nulo$
+    BEGIN
+	IF NEW.nome = '' THEN
+	    RAISE EXCEPTION 'Nome nulo';
+	END IF;
+
+	IF NEW.crm = '' THEN
+	    RAISE EXCEPTION 'CRM nulo';
+	END IF;
+
+	IF NEW.telefone = '' THEN
+	    RAISE EXCEPTION 'Telefone nulo';
+	END IF;
+
+	RETURN NEW;
+    END;
+$medico_nulo$ LANGUAGE plpgsql;
+
+CREATE TRIGGER medico_nulo BEFORE INSERT OR UPDATE ON MEDICO FOR EACH ROW EXECUTE PROCEDURE medico_nulo();
