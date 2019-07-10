@@ -86,3 +86,20 @@ CREATE OR REPLACE FUNCTION produto_nulo() RETURNS trigger AS $produto_nulo$
 $produto_nulo$ LANGUAGE plpgsql;
 
 CREATE TRIGGER produto_nulo BEFORE INSERT OR UPDATE ON produto FOR EACH ROW EXECUTE PROCEDURE produto_nulo();
+
+CREATE OR REPLACE FUNCTION categoria_nula() RETURNS trigger AS $categoria_nula$
+    DECLARE
+        tamanho_nome INTEGER;
+
+    BEGIN
+	SELECT length(NEW.nome) INTO tamanho_nome;
+
+	IF NEW.nome = '' THEN
+	    RAISE EXCEPTION 'Nome nulo';
+	END IF;
+
+	RETURN NEW;
+    END;
+$categoria_nula$ LANGUAGE plpgsql;
+
+CREATE TRIGGER categoria_nula BEFORE INSERT OR UPDATE ON CATEGORIA FOR EACH ROW EXECUTE PROCEDURE categoria_nula();
