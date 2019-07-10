@@ -136,3 +136,15 @@ CREATE OR REPLACE FUNCTION loja_nula() RETURNS trigger AS $loja_nula$
 $loja_nula$ LANGUAGE plpgsql;
 
 CREATE TRIGGER loja_nula BEFORE INSERT OR UPDATE ON LOJA FOR EACH ROW EXECUTE PROCEDURE loja_nula();
+
+CREATE OR REPLACE FUNCTION fornecedor_nulo() RETURNS trigger AS $fornecedor_nulo$
+    BEGIN
+	IF NEW.nome = '' THEN
+	    RAISE EXCEPTION 'Nome nulo';
+	END IF;
+
+	RETURN NEW;
+    END;
+$fornecedor_nulo$ LANGUAGE plpgsql;
+
+CREATE TRIGGER fornecedor_nulo BEFORE INSERT OR UPDATE ON FORNECEDOR FOR EACH ROW EXECUTE PROCEDURE fornecedor_nulo();
