@@ -120,3 +120,19 @@ CREATE OR REPLACE FUNCTION local_nulo() RETURNS trigger AS $local_nulo$
 $local_nulo$ LANGUAGE plpgsql;
 
 CREATE TRIGGER local_nulo BEFORE INSERT OR UPDATE ON LOCAL FOR EACH ROW EXECUTE PROCEDURE local_nulo();
+
+CREATE OR REPLACE FUNCTION loja_nula() RETURNS trigger AS $loja_nula$
+    BEGIN
+	IF NEW.nome = '' THEN
+	    RAISE EXCEPTION 'Nome nulo';
+	END IF;
+
+	IF NEW.endereco = '' THEN
+	    RAISE EXCEPTION 'Endereço nulo';
+	END IF;
+
+	RETURN NEW;
+    END;
+$loja_nula$ LANGUAGE plpgsql;
+
+CREATE TRIGGER loja_nula BEFORE INSERT OR UPDATE ON LOJA FOR EACH ROW EXECUTE PROCEDURE loja_nula();
