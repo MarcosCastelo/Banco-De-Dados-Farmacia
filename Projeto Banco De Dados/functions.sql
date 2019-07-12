@@ -54,27 +54,35 @@ CREATE OR REPLACE FUNCTION CADASTRACLIENTE(CPF VARCHAR(11), NOME VARCHAR(50), EM
 	    END
 	$$ LANGUAGE plpgsql;
 
-	CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nome_loja) RETURNS void as $$
-	    DECLARE
-	        id_prod INT;
-	        cod_forn INT;
-	        valor_prod DECIMAL;
-	        valor_compra DECIMAL;
-	        id_loja INT;
-	    BEGIN
-	        SELECT BUSCAPRODUTO(nome_prod) INTO id_prod;
+CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nome_loja varchar(50)) RETURNS void as $$
+    DECLARE
+        id_prod INT;
+        cod_forn INT;
+        valor_prod DECIMAL;
+        valor_compra DECIMAL;
+        id_loja INT;
+        id_compra INT;
+        ID_ESTOQUE INT;
+    BEGIN
+        SELECT BUSCAPRODUTO(nome_prod) INTO id_prod;
+        SELECT fornecedor from PRECO WHERE produto=id_prod ORDER BY valor LIMIT 1 INTO cod_forn;
+        SELECT valor FROM PRECO WHERE produto=id_prod AND FORNECEDOR=COD_FORN INTO valor_prod;
+        SELECT busca_loja(nome_loja) INTO id_loja;
+        valor_compra := valor_prod*quant;
+        if EXISTS( SELECT * FROM COMPRA) THEN
+		Select max(COMPRA_ID) + 1 into ID_COMPRA from COMPRA;
+		INSERT INTO COMPRA VALUES(ID_COMPRA, cod_forn, valor_compra, CURRENT_DATE);
+	ELSE
+		ID_COMPRA := 1;
+		INSERT INTO COMPRA VALUES(ID_COMPRA, cod_forn, valor_compra, CURRENT_DATE);
+	END IF;
+	
+	SELECT ESTOQUE_ID INTO ID_ESTOQUE FROM ESTOQUE WHERE PRODUTO_ID = ID_PROD AND LOJA_ID = ID_LOJA;
+	
+        INSERT INTO ITEM_COMPRA VALUES(DEFAULT, ID_COMPRA, ID_ESTOQUE, QUANT, VALOR_PROD);
+        UPDATE ESTOQUE SET QUANTIDADE = QUANTIDADE + QUANT;
+        
+    END
+$$ LANGUAGE plpgsql;
 
-	        SELECT fornecedor from PRECO WHERE produto=id_prod ORDER BY valor LIMIT 1 INTO forn;
 
-	        INSERT INTO COMPRA VALUES(default, cod_forn, CURRENT_DATE);
-
-	        SELECT valor FROM PRECO WHERE produto=id_prod INTO valor_prod;
-
-	        valor_compra := valor_prod*quant;
-
-	        SELECT busca_loja(nome_loja) INTO id_loja;
-
-	        -- To do: manipular ITEM_COMPRA
-
-	    END
-	$$ LANGUAGE plpgsql;

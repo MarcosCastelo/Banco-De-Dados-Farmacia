@@ -60,7 +60,9 @@ CREATE TABLE LOJA(
 	endereco varchar(50) not null
 );
 
+
 CREATE TABLE ESTOQUE(
+	estoque_id serial primary key,
 	loja_id int not null,
 	produto int not null,
 	preco decimal not null,
@@ -74,7 +76,8 @@ CREATE TABLE PRECO(
 	produto int not null,
 	valor decimal not null,
 	foreign key(fornecedor) references fornecedor(fornecedor_id),
-	foreign key(produto) references produto(produto_id)
+	foreign key(produto) references produto(produto_id),
+	constraint preco_id primary key(produto, fornecedor)
 );
 
 CREATE TABLE FORNECEDOR(
@@ -85,6 +88,7 @@ CREATE TABLE FORNECEDOR(
 CREATE TABLE COMPRA(
 	compra_id serial primary key,
 	fornecedor int not null,
+	VALOR_TOTAL DECIMAL,
 	HORA_DATA TIMESTAMP NOT NULL,
 	foreign key(fornecedor) references fornecedor(fornecedor_id)
 );
