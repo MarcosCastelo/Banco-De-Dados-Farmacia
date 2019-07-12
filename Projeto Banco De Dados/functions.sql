@@ -53,3 +53,28 @@ CREATE OR REPLACE FUNCTION CADASTRACLIENTE(CPF VARCHAR(11), NOME VARCHAR(50), EM
 	        RETURN id_loja;
 	    END
 	$$ LANGUAGE plpgsql;
+
+	CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nome_loja) RETURNS void as $$
+	    DECLARE
+	        id_prod INT;
+	        cod_forn INT;
+	        valor_prod DECIMAL;
+	        valor_compra DECIMAL;
+	        id_loja INT;
+	    BEGIN
+	        SELECT BUSCAPRODUTO(nome_prod) INTO id_prod;
+
+	        SELECT fornecedor from PRECO WHERE produto=id_prod ORDER BY valor LIMIT 1 INTO forn;
+
+	        INSERT INTO COMPRA VALUES(default, cod_forn, CURRENT_DATE);
+
+	        SELECT valor FROM PRECO WHERE produto=id_prod INTO valor_prod;
+
+	        valor_compra := valor_prod*quant;
+
+	        SELECT busca_loja(nome_loja) INTO id_loja;
+
+	        -- To do: manipular ITEM_COMPRA
+
+	    END
+	$$ LANGUAGE plpgsql;
