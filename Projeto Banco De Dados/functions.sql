@@ -62,6 +62,17 @@ CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nom
         id_compra INT;
         ID_ESTOQUE INT;
     BEGIN
+
+	IF nome_prod IS NULL THEN
+		RAISE EXCEPTION 'insira um nome valido';
+	END IF;
+	IF QUANT IS NULL OR QUANT <= 0 THEN
+		RAISE EXCEPTION 'QUANTIDADE PRECISA SER UM VALOR POSITIVO VÁLIDO';
+	END IF;
+	IF NOME_loja IS NULL THEN
+		RAISE EXCEPTION 'INSIRA UMA LOJA VÁLIDO';
+	END IF;
+    
         SELECT BUSCAPRODUTO(nome_prod) INTO id_prod;
         SELECT fornecedor from PRECO WHERE produto=id_prod ORDER BY valor LIMIT 1 INTO cod_forn;
         SELECT valor FROM PRECO WHERE produto=id_prod AND FORNECEDOR=COD_FORN INTO valor_prod;
