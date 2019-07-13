@@ -61,6 +61,7 @@ CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nom
         id_loja INT;
         id_compra INT;
         ID_ESTOQUE INT;
+        preco_mercado DECIMAL;
     BEGIN
 
 	IF nome_prod IS NULL THEN
@@ -85,6 +86,11 @@ CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nom
 		ID_COMPRA := 1;
 		INSERT INTO COMPRA VALUES(ID_COMPRA, cod_forn, valor_compra, CURRENT_DATE);
 	END IF;
+
+        -- Adicionando ao estoque um produto comprado pela 1ª vez
+	IF NOT EXISTS(SELECT * FROM ESTOQUE WHERE loja_id=id_loja AND produto=id_prod) THEN
+	    preco_mercado := sum(valor_prod, valor_prod*0.2);
+	    INSERT INTO ESTOQUE VALUES(default, id_loja, id_prod, preco_mercado, 0);
 	
 	SELECT ESTOQUE_ID INTO ID_ESTOQUE FROM ESTOQUE WHERE PRODUTO_ID = ID_PROD AND LOJA_ID = ID_LOJA;
 	
