@@ -87,16 +87,16 @@ CREATE OR REPLACE FUNCTION realizar_pedido(nome_prod VARCHAR(50), quant INT, nom
 
         -- Adicionando ao estoque um produto comprado pela 1ª vez
 	IF NOT EXISTS(SELECT * FROM ESTOQUE WHERE loja_id=id_loja AND produto=id_prod) THEN
-	    preco_mercado := sum(valor_prod, valor_prod*0.2);
+	    preco_mercado := valor_prod+valor_prod * 0.2;
 	    INSERT INTO ESTOQUE VALUES(default, id_loja, id_prod, preco_mercado, 0);
+	END IF;
 	
-	SELECT ESTOQUE_ID INTO ID_ESTOQUE FROM ESTOQUE WHERE PRODUTO_ID = ID_PROD AND LOJA_ID = ID_LOJA;
+	SELECT ESTOQUE_ID INTO ID_ESTOQUE FROM ESTOQUE WHERE produto = ID_PROD AND LOJA_ID = ID_LOJA;
 	
         INSERT INTO ITEM_COMPRA VALUES(DEFAULT, ID_COMPRA, ID_ESTOQUE, QUANT, VALOR_PROD);
         UPDATE ESTOQUE SET QUANTIDADE = QUANTIDADE + QUANT;
-        
-    END
-$$ LANGUAGE plpgsql;
+    END;
+$$ LANGUAGE plpgsql
 		
 CREATE OR REPLACE FUNCTION realiza_venda (id_venda INTEGER, cpf VARCHAR(11), nome_prod VARCHAR(50), quant INT, NOME_receita VARCHAR(50), local_nome VARCHAR(50)) RETURNS VOID AS $$
 	DECLARE
