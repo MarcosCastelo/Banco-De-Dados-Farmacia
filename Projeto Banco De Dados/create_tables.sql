@@ -22,6 +22,11 @@ CREATE TABLE MARCA(
     nome varchar(50) not null
 );
 
+CREATE TABLE CATEGORIA(
+	categoria_id serial primary key,
+	nome varchar(50) not null
+);
+
 CREATE TABLE produto (
 	produto_id serial primary key,
 	nome varchar(50) not null,
@@ -29,11 +34,6 @@ CREATE TABLE produto (
 	categoria int not null,
 	foreign key (marca) references marca(marca_id),
 	foreign key (categoria) references categoria(categoria_id)
-);
-
-CREATE TABLE CATEGORIA(
-	categoria_id serial primary key,
-	nome varchar(50) not null
 );
 
 CREATE TABLE MEDICO(
@@ -71,6 +71,11 @@ CREATE TABLE ESTOQUE(
 	foreign key (produto) references produto(produto_id)
 );
 
+CREATE TABLE FORNECEDOR(
+	fornecedor_id serial primary key,
+	nome varchar(50)
+);
+
 CREATE TABLE PRECO(
 	fornecedor int not null,
 	produto int not null,
@@ -78,11 +83,6 @@ CREATE TABLE PRECO(
 	foreign key(fornecedor) references fornecedor(fornecedor_id),
 	foreign key(produto) references produto(produto_id),
 	constraint preco_id primary key(produto, fornecedor)
-);
-
-CREATE TABLE FORNECEDOR(
-	fornecedor_id serial primary key,
-	nome varchar(50)
 );
 
 CREATE TABLE COMPRA(
@@ -100,7 +100,7 @@ CREATE TABLE ITEM_COMPRA(
 	QUANTIDADE INT NOT NULL,
 	VALOR DECIMAL NOT NULL,
 	FOREIGN KEY(COMPRA_ID) REFERENCES COMPRA(COMPRA_ID),
-	FOREIGN KEY(ESTOQUE) REFERENCES ESTOQUE(ESTOQUE_ID)
+	FOREIGN KEY(ESTOQUE_ID) REFERENCES ESTOQUE(ESTOQUE_ID)
 	
 	
 );
@@ -131,15 +131,5 @@ CREATE TABLE ITEM_VENDA(
 	QUANTIDADE INT NOT NULL,
 	VALOR DECIMAL NOT NULL,
 	FOREIGN KEY(VENDA) REFERENCES VENDA(VENDA_ID),
-	FOREIGN KEY(ESTOQUE) REFERENCES ESTOQUE(ESTOQUE_ID)
-);
-
-CREATE TABLE ITEM_COMPRA(
-	ITEM_COMPRA_ID SERIAL PRIMARY KEY,
-	COMPRA INT NOT NULL,
-	ESTOQUE INT NOT NULL,
-	QUANTIDADE INT NOT NULL,
-	VALOR DECIMAL NOT NULL,
-	FOREIGN KEY(COMPRA) REFERENCES COMPRA(COMPRA_ID),
 	FOREIGN KEY(ESTOQUE) REFERENCES ESTOQUE(ESTOQUE_ID)
 );
